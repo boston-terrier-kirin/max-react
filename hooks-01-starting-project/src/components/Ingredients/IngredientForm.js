@@ -10,7 +10,7 @@ const IngredientForm = React.memo((props) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    props.onAddIngredient({ id: Math.random().toString(), title, amount });
+    props.onAddIngredient({ title, amount });
   };
 
   return (
