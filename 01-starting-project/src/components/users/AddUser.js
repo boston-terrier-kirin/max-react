@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import ErrorModal from '../ui/ErrorModal';
@@ -9,8 +9,18 @@ const AddUser = (props) => {
   const [age, setAge] = useState('');
   const [error, setError] = useState(null);
 
+  // refでstateの代わりができなくもないが、入力値のクリアをする場合、直接domの値を変更することになるので良くない。
+  // refはリードオンリーの用途で使うのが正解な気がする。
+  const usernameRef = useRef();
+
   const addUserHandler = (event) => {
     event.preventDefault();
+
+    // refで値を参照
+    console.log(usernameRef.current.value);
+
+    // currentに入っているのは生のdomなので、これはやらない方が良い
+    // usernameRef.current.value = '';
 
     if (username.trim().length === 0 || age.trim().length === 0) {
       setError({
@@ -58,6 +68,7 @@ const AddUser = (props) => {
             type="text"
             value={username}
             onChange={(e) => setUserName(e.target.value)}
+            ref={usernameRef}
           />
           <label htmlFor="age">Age</label>
           <input
