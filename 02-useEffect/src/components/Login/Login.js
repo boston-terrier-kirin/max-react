@@ -17,9 +17,17 @@ const Login = (props) => {
    * formValidだったらsetFormIsValidが走って、renderingが走る。
    */
   useEffect(() => {
-    const formValid =
-      enteredEmail.includes('@') && enteredPassword.trim().length > 6;
-    setFormIsValid(formValid);
+    const timerId = setTimeout(() => {
+      console.log('Check!');
+      const formValid =
+        enteredEmail.includes('@') && enteredPassword.trim().length > 6;
+      setFormIsValid(formValid);
+    }, 500);
+
+    return () => {
+      console.log('Cleanup');
+      clearTimeout(timerId);
+    };
   }, [enteredEmail, enteredPassword]);
 
   const validateEmailHandler = () => {
