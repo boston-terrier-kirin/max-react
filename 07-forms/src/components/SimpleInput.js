@@ -1,65 +1,34 @@
-import { useEffect, useRef, useState } from 'react';
+import useInput from '../hooks/useInput';
 
 const SimpleInput = (props) => {
-  const nameRef = useRef();
+  const {
+    value: name,
+    isValid: nameIsValid,
+    hasError: nameHasError,
+    valueChangeHandler: nameChangeHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: resetName,
+  } = useInput((value) => {
+    return value.trim() !== '';
+  });
 
-  const [name, setName] = useState('');
-  const [nameIsValid, setNameIsValid] = useState(false);
-  const [nameTouched, setNameTouched] = useState(false);
-  const [formIsValid, setFormIsValid] = useState(false);
-
-  useEffect(() => {
-    if (nameIsValid) {
-      setFormIsValid(true);
-    } else {
-      setFormIsValid(false);
-    }
-  }, [nameIsValid]);
+  let formIsValid = false;
+  if (nameIsValid) {
+    formIsValid = true;
+  }
 
   const submitHandler = (event) => {
     event.preventDefault();
 
-    setNameTouched(true);
-
-    if (!name.trim()) {
-      setNameIsValid(false);
+    if (!formIsValid) {
       return;
     }
-
-    setNameIsValid(true);
 
     console.log('name: ', name);
-    console.log('nameRef.current.value: ', nameRef.current.value);
-
-    setName('');
+    resetName();
   };
 
-  const nameInputHandler = (event) => {
-    setName(event.target.value);
-
-    // setNameの反映が遅れることもあるので、event.target.value で判定した方が無難。
-    // if (!name.trim())
-    if (!event.target.value.trim()) {
-      setNameIsValid(false);
-      return;
-    }
-
-    setNameIsValid(true);
-  };
-
-  const nameBlurHandler = (event) => {
-    setNameTouched(true);
-
-    if (!name.trim()) {
-      setNameIsValid(false);
-      return;
-    }
-
-    setNameIsValid(true);
-  };
-
-  const nameIsInvalid = nameTouched && !nameIsValid;
-  const nameClasses = nameIsInvalid ? 'form-control invalid' : 'form-control';
+  const nameClasses = nameHasError ? 'form-control invalid' : 'form-control';
 
   return (
     <form onSubmit={submitHandler}>
@@ -69,11 +38,10 @@ const SimpleInput = (props) => {
           type="text"
           id="name"
           value={name}
-          onChange={nameInputHandler}
+          onChange={nameChangeHandler}
           onBlur={nameBlurHandler}
-          ref={nameRef}
         />
-        {nameIsInvalid && <p className="error-text">Name must not be empty.</p>}
+        {nameHasError && <p className="error-text">Name must not be empty.</p>}
       </div>
       <div className="form-actions">
         <button disabled={!formIsValid}>Submit</button>
