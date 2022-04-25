@@ -48,6 +48,13 @@ const Checkout = (props) => {
     if (!formIsValid) {
       return;
     }
+
+    props.onConfirm({
+      name,
+      street,
+      city,
+      postal,
+    });
   };
 
   return (
@@ -77,7 +84,7 @@ const Checkout = (props) => {
       >
         <label htmlFor="postal">Postal Code</label>
         <input ref={postalRef} type="text" id="postal" />
-        {!formInputValidity.name && <p>Please enter a valid postal code.</p>}
+        {!formInputValidity.postal && <p>Please enter a valid postal code.</p>}
       </div>
       <div
         className={`${classes.control} ${

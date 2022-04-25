@@ -8,6 +8,9 @@ import Checkout from './Checkout';
 const Cart = (props) => {
   const cartCtx = useContext(CartContext);
   const [isCheckout, setIsCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
 
@@ -25,6 +28,23 @@ const Cart = (props) => {
 
   const cancelOrderHandler = () => {
     setIsCheckout(false);
+  };
+
+  const submitOrderHandler = async (userData) => {
+    setIsSubmitting(true);
+
+    await fetch(
+      'https://react-http-913ae-default-rtdb.firebaseio.com/orders.json',
+      {
+        method: 'POST',
+        body: JSON.stringify({ user: userData, order: cartCtx.items }),
+      }
+    );
+
+    setIsSubmitting(false);
+    setSuccess(true);
+
+    cartCtx.clearCart();
   };
 
   const cartItems = cartCtx.items.map((item) => (
@@ -51,14 +71,41 @@ const Cart = (props) => {
     </div>
   );
 
-  return (
-    <Modal onHideCart={props.onHideCart}>
+  const cardModalContent = (
+    <>
       <ul className={classes['cart-items']}>{cartItems}</ul>
       <div className={classes.total}>
         <span>Total Amount:</span>
         <span>{totalAmount}</span>
       </div>
-      {isCheckout ? <Checkout onCancel={cancelOrderHandler} /> : modalActions}
+      {isCheckout ? (
+        <Checkout
+          onCancel={cancelOrderHandler}
+          onConfirm={submitOrderHandler}
+        />
+      ) : (
+        modalActions
+      )}
+    </>
+  );
+
+  const submittingContent = <p>Sending order data...</p>;
+  const successContent = (
+    <>
+      <p>Successfully sent the order!</p>{' '}
+      <div className={classes.actions}>
+        <button className={classes.button} onClick={props.onHideCart}>
+          Close
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <Modal onHideCart={props.onHideCart}>
+      {isSubmitting && submittingContent}
+      {!isSubmitting && !success && cardModalContent}
+      {success && successContent}
     </Modal>
   );
 };
