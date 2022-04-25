@@ -29,6 +29,10 @@ function App() {
 
   const allowToggleHandler = () => {
     setAllowToggle(true);
+
+    // このタイミングでは allowToggle はfalseのまま。
+    // Reactはステートをまとめて変更しているからか、ステートが変わって、re-render される時点で true になる。
+    console.log(allowToggle);
   };
 
   // ■React.memp
