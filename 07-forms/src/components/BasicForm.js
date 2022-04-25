@@ -61,7 +61,7 @@ const BasicForm = (props) => {
     <form onSubmit={submitHandler}>
       <div className="control-group">
         <div className={getClasses(firstNameHasError)}>
-          <label htmlFor="name">First Name</label>
+          <label htmlFor="firstName">First Name</label>
           <input
             type="text"
             id="firstName"
@@ -74,7 +74,7 @@ const BasicForm = (props) => {
           )}
         </div>
         <div className={getClasses(lastNameHasError)}>
-          <label htmlFor="name">Last Name</label>
+          <label htmlFor="lastName">Last Name</label>
           <input
             type="text"
             id="lastName"
@@ -88,7 +88,7 @@ const BasicForm = (props) => {
         </div>
       </div>
       <div className={getClasses(emailHasError)}>
-        <label htmlFor="name">E-Mail Address</label>
+        <label htmlFor="email">E-Mail Address</label>
         <input
           type="text"
           id="email"
