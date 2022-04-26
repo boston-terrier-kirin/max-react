@@ -11,6 +11,12 @@ const counterReduer = (state = defaultState, action) => {
     };
   }
 
+  if (action.type === 'INCREASE_BY') {
+    return {
+      counter: state.counter + action.payload.value,
+    };
+  }
+
   if (action.type === 'DECREMENT') {
     return {
       counter: state.counter - 1,
